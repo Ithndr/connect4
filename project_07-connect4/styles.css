@@ -1,0 +1,35 @@
+*{
+    background-color: black;
+    color: white;
+}
+.titleBox{
+    background-color: grey;
+    padding: 1rem 5rem 1rem 5rem;
+}
+body{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+td{
+    background-color: blue;
+    border: 1px solid black;
+    width: 105px;
+    height: 105px;
+}
+button {
+    border: none;
+    background-color: grey;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+#start{background-color: green;}
+#restart{background-color: orange;}
+
+.red{background-color: red; border-radius: 50%;}
+.yellow{background-color: yellow; border-radius: 50%;}

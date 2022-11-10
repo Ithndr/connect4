@@ -3,7 +3,7 @@ let game = {
     playing: false,
     seconds: 0,
     minutes: 0,
-    win: false,
+    win: '',
     p1: 0,
     p2: 0,
     posY: 0
@@ -16,6 +16,8 @@ let seconds = document.getElementById('seconds');
 let minutes = document.getElementById('minutes');
 let board = document.getElementById('board');
 let showPlayer = document.getElementById("currPlayer");
+let rows = document.querySelectorAll('tr');
+
 //defualt color for p1 is red
 playerColor = 'red';
 
@@ -56,41 +58,102 @@ function makePlay(event) {
     //dont allow play to be made until game is started
     if (game.playing === false) return;
     const target = event.target;
-    console.log(event.target.innerText);
-    console.log(board.children);
-    if (playerColor === 'red' && event.target.tagName === 'TD') {
-        target.className = 'red';
+    let xpos = event.target.innerText;
+    if (playerColor === 'red' && target.tagName === 'TD' 
+    && target.className !== 'yellow' && target.className !== 'red') {
+        dropCoin(playerColor, xpos);
         playerColor = 'yellow'
         showPlayer.innerText = '2\'s turn'
     }
-    else if (playerColor === 'yellow' && event.target.tagName === 'TD') {
-        target.className = 'yellow';
+    else if (playerColor === 'yellow' && target.tagName === 'TD' 
+    && target.className !== 'red' && target.className !== 'yellow') {
+        dropCoin(playerColor, xpos);
         playerColor = 'red';
         showPlayer.innerText = '1\'s turn'
     }
 
 }
 board.addEventListener('click', makePlay);
-let pos = makePlay.target;
-console.log(pos);
-//will bring peice down to lowest point possible in column
-function pieceGrav() {
+
+//color will be determinded by which players turn it is, xpos will be the cell in the current row.
+//function will check to see the lowest row in that cell position 0-6 (xpos)
+function dropCoin(coinColor, xpos) {
     for (let i = 5; i > -1; i--) {
-        if(board.children[i].className.length)
+        if (rows[i].children[xpos].className.length)
             continue;
         else
-            board.children[i].className = playerColor;
+            return rows[i].children[xpos].className = coinColor;
     }
+
 }
 
 //checks for four in a row horizontal, vertical and diagonal
 function checkWin() {
+    let lastPiece = rows[0].children[0];
     //horizontal check
-
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 3; j++) {
+            //checks initial postion and 3 in front of it to determine if there a 4 of a kind
+            //makes sure it isnt blank also*
+            if (rows[i].children[j].className === rows[i].children[j + 1].className
+                && rows[i].children[j].className === rows[i].children[j + 2].className
+                && rows[i].children[j].className === rows[i].children[j + 3].className
+                && rows[i].children[j].className !== '') {
+                game.win = rows[i].children[j].className;
+                // game.playing = false;
+            }
+        }
+    }
     //vertical check
-
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 3; j++) {
+            //checks each row with the same column position to check and see if the columns match
+            //ignores blank spaces
+            if (rows[j].children[i].className === rows[j + 1].children[i].className
+                && rows[j].children[i].className === rows[j + 2].children[i].className
+                && rows[j].children[i].className === rows[j + 3].children[i].className
+                && rows[j].children[i].className !== '') {
+                game.win = rows[j].children[i].className;
+            }
+        }
+    }
     //diagonal check
-
+    //checks the diagonal in both directions
+    for (let i = 0; i < 2; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (rows[j].children[i].className === rows[j + 1].children[i + 1].className
+                && rows[j].children[i].className === rows[j + 2].children[i + 2].className
+                && rows[j].children[i].className === rows[j + 3].children[i + 3].className
+                && rows[j].children[i].className !== '') {
+                game.win = rows[j].children[i].className;
+            }
+        }
+    }
+    for (let i = 0; i < 3; i++) {
+        for (let j = 5; j > 2; j--) {
+            if (rows[j].children[i].className === rows[j - 1].children[i + 1].className
+                && rows[j].children[i].className === rows[j - 2].children[i + 2].className
+                && rows[j].children[i].className === rows[j - 3].children[i + 3].className
+                && rows[j].children[i].className !== '') {
+                game.win = rows[j].children[i].className;
+            }
+        }
+    }
+    //full board check (no win)
+    let rowCheck = 0;
+    let colCheck = 0;
+    for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 6; j++) {
+            if (rows[i].children[j].className !== '')
+                rowCheck++;
+        }
+        if (rowCheck === 7) {
+            rowCheck = 0;
+            colCheck++;
+        }
+    }
+    if (colCheck === 6)
+        game.win = 'Full Board No Win';
 }
 
 //timer
@@ -110,5 +173,14 @@ function advanceTime() {
 //tick speed
 setInterval(function () {
     if (!game.playing) return;
-    advanceTime()
+    advanceTime();
+    checkWin();
+    if (game.win === 'red') {
+        showPlayer.innerText = '1 Wins!';
+        game.playing = false;
+    }
+    else if (game.win === 'yellow') {
+        showPlayer.innerText = '2 Wins!';
+        game.playing = false;
+    }
 }, 1000)

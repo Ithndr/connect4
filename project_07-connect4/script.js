@@ -26,11 +26,13 @@ playBtn.addEventListener('click', function (advanceTime) {
     if (game.playing === false) {
         game.playing = true;
         playBtn.innerText = 'Pause';
+        playBtn.style.backgroundColor = 'red';
     }
     else {
         ;
         game.playing = false;
         playBtn.innerText = 'Play';
+        playBtn.style.backgroundColor = 'green';
     }
 })
 
@@ -71,7 +73,6 @@ function makePlay(event) {
         playerColor = 'red';
         showPlayer.innerText = '1\'s turn'
     }
-
 }
 board.addEventListener('click', makePlay);
 
@@ -119,6 +120,7 @@ function checkWin() {
     }
     //diagonal check
     //checks the diagonal in both directions
+    //step up check, checks diagonal like upward staircase
     for (let i = 0; i < 2; i++) {
         for (let j = 0; j < 3; j++) {
             if (rows[j].children[i].className === rows[j + 1].children[i + 1].className
@@ -129,6 +131,8 @@ function checkWin() {
             }
         }
     }
+    //step down check
+    //checks diagonal like downward staircase
     for (let i = 0; i < 3; i++) {
         for (let j = 5; j > 2; j--) {
             if (rows[j].children[i].className === rows[j - 1].children[i + 1].className
@@ -140,20 +144,19 @@ function checkWin() {
         }
     }
     //full board check (no win)
-    let rowCheck = 0;
     let colCheck = 0;
-    for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 6; j++) {
-            if (rows[i].children[j].className !== '')
-                rowCheck++;
-        }
-        if (rowCheck === 7) {
-            rowCheck = 0;
-            colCheck++;
-        }
-    }
-    if (colCheck === 6)
-        game.win = 'Full Board No Win';
+   for(let i = 0;i<5;i++){
+       if(rows[i].children[0] !== ''
+       && rows[i].children[1] !== ''
+       && rows[i].children[2] !== ''
+       && rows[i].children[3] !== ''
+       && rows[i].children[4] !== ''
+       && rows[i].children[5] !== ''
+       && rows[i].children[6] !== '')
+        colCheck++;
+   }
+   if(colCheck === 6)
+    showPlayer.innerText = 'Full Board No Win!'
 }
 
 //timer

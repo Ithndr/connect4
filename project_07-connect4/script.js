@@ -146,13 +146,13 @@ function checkWin() {
     //full board check (no win)
     let colCheck = 0;
    for(let i = 0;i<5;i++){
-       if(rows[i].children[0] !== ''
-       && rows[i].children[1] !== ''
-       && rows[i].children[2] !== ''
-       && rows[i].children[3] !== ''
-       && rows[i].children[4] !== ''
-       && rows[i].children[5] !== ''
-       && rows[i].children[6] !== '')
+       if(rows[i].children[0].className !== ''
+       && rows[i].children[1].className !== ''
+       && rows[i].children[2].className !== ''
+       && rows[i].children[3].className !== ''
+       && rows[i].children[4].className !== ''
+       && rows[i].children[5].className !== ''
+       && rows[i].children[6].className !== '')
         colCheck++;
    }
    if(colCheck === 6)
